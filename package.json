@@ -1,0 +1,15 @@
+{
+  "name": "cable-plant",
+  "version": "2.0.1",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite --host",
+    "build": "tsc --noEmit && vite build",
+    "preview": "vite preview --port 3000 --host"
+  },
+  "devDependencies": {
+    "typescript": "^5.4.5",
+    "vite": "^5.2.0"
+  }
+}
