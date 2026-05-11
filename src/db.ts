@@ -1,6 +1,59 @@
 import type { Table, Schema, Device, CType, Wire, Assembly } from './types';
 import { uid, toast } from './utils';
 
+/* ── IndexedDB backup (iOS PWA localStorage eviction workaround) ── */
+const IDB_NAME = 'cp_backup';
+const IDB_STORE = 'snapshot';
+const IDB_KEY = 'data';
+
+function openIdb(): Promise<IDBDatabase> {
+  return new Promise((resolve, reject) => {
+    const req = indexedDB.open(IDB_NAME, 1);
+    req.onupgradeneeded = () => req.result.createObjectStore(IDB_STORE);
+    req.onsuccess = () => resolve(req.result);
+    req.onerror = () => reject(req.error);
+  });
+}
+
+function idbSave(snapshot: Record<string, string>): void {
+  openIdb().then(db => {
+    const tx = db.transaction(IDB_STORE, 'readwrite');
+    tx.objectStore(IDB_STORE).put(snapshot, IDB_KEY);
+  }).catch(() => {/* silently ignore */});
+}
+
+function idbLoad(): Promise<Record<string, string> | null> {
+  return openIdb().then(db => new Promise<Record<string, string> | null>((resolve, reject) => {
+    const req = db.transaction(IDB_STORE, 'readonly').objectStore(IDB_STORE).get(IDB_KEY);
+    req.onsuccess = () => resolve((req.result as Record<string, string>) ?? null);
+    req.onerror = () => reject(req.error);
+  })).catch(() => null);
+}
+
+const DATA_KEYS = ['cp_table', 'cp_schema', 'cp_skon', 'cp_ctype', 'cp_wire'];
+
+function scheduleIdbBackup(): void {
+  // Debounce: write once per microtask batch
+  if ((scheduleIdbBackup as { _p?: boolean })._p) return;
+  (scheduleIdbBackup as { _p?: boolean })._p = true;
+  queueMicrotask(() => {
+    (scheduleIdbBackup as { _p?: boolean })._p = false;
+    const snapshot: Record<string, string> = {};
+    DATA_KEYS.forEach(k => { snapshot[k] = localStorage.getItem(k) ?? '[]'; });
+    idbSave(snapshot);
+  });
+}
+
+/** Call once at app start: if localStorage is empty, restore from IndexedDB backup */
+export async function restoreFromIdbIfNeeded(): Promise<void> {
+  const hasData = DATA_KEYS.some(k => localStorage.getItem(k));
+  if (hasData) return;
+  const snapshot = await idbLoad();
+  if (!snapshot) return;
+  DATA_KEYS.forEach(k => { if (snapshot[k]) localStorage.setItem(k, snapshot[k]); });
+}
+
+/* ── localStorage helpers ─────────────────────────────────────── */
 const rd = <T>(key: string): T[] => {
   try {
     return JSON.parse(localStorage.getItem(key) ?? '[]') as T[];
@@ -12,6 +65,7 @@ const rd = <T>(key: string): T[] => {
 const wr = <T>(key: string, val: T[]): void => {
   try {
     localStorage.setItem(key, JSON.stringify(val));
+    scheduleIdbBackup();
   } catch {
     toast('⚠️ Storage full');
   }

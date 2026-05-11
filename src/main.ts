@@ -34,9 +34,15 @@ import {
 // Wire the render function into state
 setRenderFn(render);
 
-/* ── Data migration ─────────────────────────────────────────────── */
-import { migrateToV8 } from './db';
-migrateToV8();
+/* ── Data migration & iOS backup restore ────────────────────────── */
+import { migrateToV8, restoreFromIdbIfNeeded } from './db';
+
+restoreFromIdbIfNeeded().then(() => {
+  migrateToV8();
+  render();
+});
+
+// Prevent double render below — render() above handles initial draw
 /* ── Expose all handlers to window (used from inline onclick HTML) ── */
 declare global {
   interface Window {
@@ -95,6 +101,3 @@ window.startAssemblyAction = startAssemblyAction;
 window.stopAssemblyAction = stopAssemblyAction;
 window.resetAssemblyAction = resetAssemblyAction;
 window.toggleWireDoneAction = toggleWireDoneAction;
-
-/* ── Initial render ─────────────────────────────────────────────── */
-render();
