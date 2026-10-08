@@ -16,18 +16,27 @@ function openIdb(): Promise<IDBDatabase> {
 }
 
 function idbSave(snapshot: Record<string, string>): void {
-  openIdb().then(db => {
-    const tx = db.transaction(IDB_STORE, 'readwrite');
-    tx.objectStore(IDB_STORE).put(snapshot, IDB_KEY);
-  }).catch(() => {/* silently ignore */});
+  openIdb()
+    .then(db => {
+      const tx = db.transaction(IDB_STORE, 'readwrite');
+      tx.objectStore(IDB_STORE).put(snapshot, IDB_KEY);
+    })
+    .catch(() => {
+      /* silently ignore */
+    });
 }
 
 function idbLoad(): Promise<Record<string, string> | null> {
-  return openIdb().then(db => new Promise<Record<string, string> | null>((resolve, reject) => {
-    const req = db.transaction(IDB_STORE, 'readonly').objectStore(IDB_STORE).get(IDB_KEY);
-    req.onsuccess = () => resolve((req.result as Record<string, string>) ?? null);
-    req.onerror = () => reject(req.error);
-  })).catch(() => null);
+  return openIdb()
+    .then(
+      db =>
+        new Promise<Record<string, string> | null>((resolve, reject) => {
+          const req = db.transaction(IDB_STORE, 'readonly').objectStore(IDB_STORE).get(IDB_KEY);
+          req.onsuccess = () => resolve((req.result as Record<string, string>) ?? null);
+          req.onerror = () => reject(req.error);
+        }),
+    )
+    .catch(() => null);
 }
 
 const DATA_KEYS = ['cp_table', 'cp_schema', 'cp_skon', 'cp_ctype', 'cp_wire'];
@@ -39,7 +48,9 @@ function scheduleIdbBackup(): void {
   queueMicrotask(() => {
     (scheduleIdbBackup as { _p?: boolean })._p = false;
     const snapshot: Record<string, string> = {};
-    DATA_KEYS.forEach(k => { snapshot[k] = localStorage.getItem(k) ?? '[]'; });
+    DATA_KEYS.forEach(k => {
+      snapshot[k] = localStorage.getItem(k) ?? '[]';
+    });
     idbSave(snapshot);
   });
 }
@@ -50,7 +61,9 @@ export async function restoreFromIdbIfNeeded(): Promise<void> {
   if (hasData) return;
   const snapshot = await idbLoad();
   if (!snapshot) return;
-  DATA_KEYS.forEach(k => { if (snapshot[k]) localStorage.setItem(k, snapshot[k]); });
+  DATA_KEYS.forEach(k => {
+    if (snapshot[k]) localStorage.setItem(k, snapshot[k]);
+  });
 }
 
 /* ── localStorage helpers ─────────────────────────────────────── */
