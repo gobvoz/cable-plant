@@ -41,6 +41,16 @@ function idbLoad(): Promise<Record<string, string> | null> {
 
 const DATA_KEYS = ['cp_table', 'cp_schema', 'cp_skon', 'cp_ctype', 'cp_wire'];
 
+function parseArraySafe(raw: string | null): unknown[] | null {
+  if (!raw) return null;
+  try {
+    const parsed = JSON.parse(raw) as unknown;
+    return Array.isArray(parsed) ? parsed : null;
+  } catch {
+    return null;
+  }
+}
+
 function scheduleIdbBackup(): void {
   // Debounce: write once per microtask batch
   if ((scheduleIdbBackup as { _p?: boolean })._p) return;
@@ -57,12 +67,22 @@ function scheduleIdbBackup(): void {
 
 /** Call once at app start: if localStorage is empty, restore from IndexedDB backup */
 export async function restoreFromIdbIfNeeded(): Promise<void> {
-  const hasData = DATA_KEYS.some(k => localStorage.getItem(k));
-  if (hasData) return;
   const snapshot = await idbLoad();
   if (!snapshot) return;
+
+  const hasMeaningfulData = DATA_KEYS.some(k => {
+    const arr = parseArraySafe(localStorage.getItem(k));
+    return !!arr && arr.length > 0;
+  });
+
+  // iOS may keep only part of keys after eviction; restore missing/empty/corrupt keys.
   DATA_KEYS.forEach(k => {
-    if (snapshot[k]) localStorage.setItem(k, snapshot[k]);
+    const current = parseArraySafe(localStorage.getItem(k));
+    const backup = parseArraySafe(snapshot[k] ?? null);
+    if (!backup) return;
+
+    const shouldRestoreKey = !current || (!hasMeaningfulData && current.length === 0);
+    if (shouldRestoreKey) localStorage.setItem(k, JSON.stringify(backup));
   });
 }
 
