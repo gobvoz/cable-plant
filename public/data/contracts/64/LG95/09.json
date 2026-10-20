@@ -68,7 +68,7 @@
       "section": "C183-H009",
       "rows": [
         { "col": "BK-R", "loc": "BCR", "device": "ASM74B:OUT1", "pos": "OUT1", "connector": "", "zone": "" },
-        { "col": "BK-R", "loc": "B", "device": "X6499A", "pos": "43", "connector": "N40168-01", "zone": "4-3 - HAUT" }
+        { "col": "BK-R", "loc": "IB", "device": "X6499A", "pos": "43", "connector": "N40168-01", "zone": "4-3 - HAUT" }
       ]
     },
     {

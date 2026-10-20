@@ -39,9 +39,9 @@ setRenderFn(render);
 
 /* ── Data migration & iOS backup restore ────────────────────────── */
 import { migrateToV8, restoreFromIdbIfNeeded } from './db';
-import { loadServerCatalog } from './catalog';
+import { loadServerCatalog, loadServerCtypes } from './catalog';
 
-Promise.all([restoreFromIdbIfNeeded(), loadServerCatalog()]).then(() => {
+Promise.all([restoreFromIdbIfNeeded(), loadServerCatalog(), loadServerCtypes()]).then(() => {
   migrateToV8();
   render();
 });

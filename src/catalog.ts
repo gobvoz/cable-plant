@@ -1,18 +1,22 @@
 import type {
   ServerContract,
+  ServerCtype,
+  ServerCtypesFile,
   ServerIndex,
   ServerSchema,
   ServerTable,
   ServerTableFile,
 } from './types';
-import { applyServerSchemasForTable, applyServerTables } from './db';
+import { applyServerCtypes, applyServerSchemasForTable, applyServerTables } from './db';
 
 const INDEX_URL = '/data/index.json';
+const CTYPES_URL = '/data/ctypes.json';
 const CACHE_KEY = 'cp_server_catalog_cache_v2';
 
 type CatalogCache = {
   index: ServerIndex;
   schemasByTable: Record<string, ServerSchema[]>;
+  ctypes: ServerCtype[];
 };
 
 let _loading = false;
@@ -20,6 +24,7 @@ let _error = '';
 let _loadingTableId = '';
 let _index: ServerIndex | null = null;
 let _schemasByTable: Record<string, ServerSchema[]> = {};
+let _ctypes: ServerCtype[] = [];
 
 function isServerContract(value: unknown): value is ServerContract {
   const row = value as Partial<ServerContract> | null;
@@ -81,11 +86,34 @@ function parseTableFile(raw: unknown): ServerTableFile {
   return { tableId: data.tableId, schemas };
 }
 
+function isServerCtype(value: unknown): value is ServerCtype {
+  const row = value as Partial<ServerCtype> | null;
+  return !!row && typeof row.name === 'string';
+}
+
+function parseCtypesFile(raw: unknown): ServerCtypesFile {
+  if (Array.isArray(raw)) {
+    const rows = raw.filter(isServerCtype);
+    if (rows.length !== raw.length) throw new Error('Invalid rows in ctypes array');
+    return { types: rows };
+  }
+
+  const data = raw as Partial<ServerCtypesFile> | null;
+  if (!data || !Array.isArray(data.types)) {
+    throw new Error('Invalid ctypes file format');
+  }
+
+  const rows = data.types.filter(isServerCtype);
+  if (rows.length !== data.types.length) throw new Error('Invalid rows in ctypes file');
+  return { types: rows };
+}
+
 function persistCache(): void {
   if (!_index) return;
   const payload: CatalogCache = {
     index: _index,
     schemasByTable: _schemasByTable,
+    ctypes: _ctypes,
   };
   try {
     localStorage.setItem(CACHE_KEY, JSON.stringify(payload));
@@ -111,7 +139,9 @@ function readCache(): CatalogCache | null {
       });
     }
 
-    return { index, schemasByTable };
+    const ctypes = Array.isArray(parsed.ctypes) ? parsed.ctypes.filter(isServerCtype) : [];
+
+    return { index, schemasByTable, ctypes };
   } catch {
     return null;
   }
@@ -201,6 +231,34 @@ export async function loadServerCatalog(force = false): Promise<void> {
       _error = 'Server catalog unavailable; using cached copy.';
     } else {
       _error = `Catalog load failed: ${(e as Error).message || 'unknown error'}`;
+    }
+  } finally {
+    _loading = false;
+  }
+}
+
+export async function loadServerCtypes(force = false): Promise<void> {
+  if (_loading) return;
+  if (_ctypes.length > 0 && !force) return;
+
+  _loading = true;
+  _error = '';
+
+  try {
+    const resp = await fetch(CTYPES_URL, { cache: 'no-store' });
+    if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+    const parsed = parseCtypesFile((await resp.json()) as unknown);
+    _ctypes = parsed.types;
+    applyServerCtypes(_ctypes);
+    persistCache();
+  } catch (e) {
+    const cached = readCache();
+    if (cached && Array.isArray(cached.ctypes) && cached.ctypes.length > 0) {
+      _ctypes = cached.ctypes;
+      applyServerCtypes(_ctypes);
+      _error = 'Connector types unavailable on server; using cached copy.';
+    } else {
+      _error = `Connector types load failed: ${(e as Error).message || 'unknown error'}`;
     }
   } finally {
     _loading = false;

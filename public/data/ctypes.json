@@ -1,0 +1,375 @@
+﻿{
+  "types": [
+    {
+      "name": "12010973",
+      "pins": null,
+      "description": "",
+      "svgConnector": "",
+      "svgPinout": ""
+    },
+    {
+      "name": "12010996",
+      "pins": null,
+      "description": "",
+      "svgConnector": "",
+      "svgPinout": ""
+    },
+    {
+      "name": "12015791",
+      "pins": null,
+      "description": "",
+      "svgConnector": "",
+      "svgPinout": ""
+    },
+    {
+      "name": "12015792",
+      "pins": null,
+      "description": "",
+      "svgConnector": "",
+      "svgPinout": ""
+    },
+    {
+      "name": "12015793",
+      "pins": null,
+      "description": "",
+      "svgConnector": "",
+      "svgPinout": ""
+    },
+    {
+      "name": "12015799",
+      "pins": null,
+      "description": "",
+      "svgConnector": "",
+      "svgPinout": ""
+    },
+    {
+      "name": "12020599",
+      "pins": null,
+      "description": "",
+      "svgConnector": "",
+      "svgPinout": ""
+    },
+    {
+      "name": "12020926",
+      "pins": null,
+      "description": "",
+      "svgConnector": "",
+      "svgPinout": ""
+    },
+    {
+      "name": "12033769",
+      "pins": null,
+      "description": "",
+      "svgConnector": "",
+      "svgPinout": ""
+    },
+    {
+      "name": "12040977",
+      "pins": null,
+      "description": "",
+      "svgConnector": "",
+      "svgPinout": ""
+    },
+    {
+      "name": "12059573",
+      "pins": null,
+      "description": "",
+      "svgConnector": "",
+      "svgPinout": ""
+    },
+    {
+      "name": "12066681",
+      "pins": null,
+      "description": "",
+      "svgConnector": "",
+      "svgPinout": ""
+    },
+    {
+      "name": "12085030",
+      "pins": null,
+      "description": "",
+      "svgConnector": "",
+      "svgPinout": ""
+    },
+    {
+      "name": "12160959",
+      "pins": null,
+      "description": "",
+      "svgConnector": "",
+      "svgPinout": ""
+    },
+    {
+      "name": "12162197",
+      "pins": null,
+      "description": "",
+      "svgConnector": "",
+      "svgPinout": ""
+    },
+    {
+      "name": "15300002",
+      "pins": null,
+      "description": "",
+      "svgConnector": "",
+      "svgPinout": ""
+    },
+    {
+      "name": "15300027",
+      "pins": null,
+      "description": "",
+      "svgConnector": "",
+      "svgPinout": ""
+    },
+    {
+      "name": "15344052",
+      "pins": null,
+      "description": "",
+      "svgConnector": "",
+      "svgPinout": ""
+    },
+    {
+      "name": "15492567",
+      "pins": null,
+      "description": "",
+      "svgConnector": "",
+      "svgPinout": ""
+    },
+    {
+      "name": "EMP ALT",
+      "pins": null,
+      "description": "",
+      "svgConnector": "",
+      "svgPinout": ""
+    },
+    {
+      "name": "G5900839",
+      "pins": null,
+      "description": "",
+      "svgConnector": "",
+      "svgPinout": ""
+    },
+    {
+      "name": "N110182-01",
+      "pins": null,
+      "description": "",
+      "svgConnector": "",
+      "svgPinout": ""
+    },
+    {
+      "name": "N29923",
+      "pins": null,
+      "description": "",
+      "svgConnector": "",
+      "svgPinout": ""
+    },
+    {
+      "name": "N30630",
+      "pins": null,
+      "description": "",
+      "svgConnector": "",
+      "svgPinout": ""
+    },
+    {
+      "name": "N31229-03",
+      "pins": null,
+      "description": "",
+      "svgConnector": "",
+      "svgPinout": ""
+    },
+    {
+      "name": "N31229-04",
+      "pins": null,
+      "description": "",
+      "svgConnector": "",
+      "svgPinout": ""
+    },
+    {
+      "name": "N31229-05",
+      "pins": null,
+      "description": "",
+      "svgConnector": "",
+      "svgPinout": ""
+    },
+    {
+      "name": "N31800",
+      "pins": null,
+      "description": "",
+      "svgConnector": "",
+      "svgPinout": ""
+    },
+    {
+      "name": "N31801",
+      "pins": null,
+      "description": "",
+      "svgConnector": "",
+      "svgPinout": ""
+    },
+    {
+      "name": "N31843",
+      "pins": null,
+      "description": "",
+      "svgConnector": "",
+      "svgPinout": ""
+    },
+    {
+      "name": "N33539",
+      "pins": null,
+      "description": "",
+      "svgConnector": "",
+      "svgPinout": ""
+    },
+    {
+      "name": "N35086",
+      "pins": null,
+      "description": "",
+      "svgConnector": "",
+      "svgPinout": ""
+    },
+    {
+      "name": "N35278",
+      "pins": null,
+      "description": "",
+      "svgConnector": "",
+      "svgPinout": ""
+    },
+    {
+      "name": "N35980",
+      "pins": null,
+      "description": "",
+      "svgConnector": "",
+      "svgPinout": ""
+    },
+    {
+      "name": "N36020-09",
+      "pins": null,
+      "description": "",
+      "svgConnector": "",
+      "svgPinout": ""
+    },
+    {
+      "name": "N36020-10",
+      "pins": null,
+      "description": "",
+      "svgConnector": "",
+      "svgPinout": ""
+    },
+    {
+      "name": "N40168-01",
+      "pins": null,
+      "description": "",
+      "svgConnector": "",
+      "svgPinout": ""
+    },
+    {
+      "name": "N41493",
+      "pins": null,
+      "description": "",
+      "svgConnector": "",
+      "svgPinout": ""
+    },
+    {
+      "name": "N44977-03",
+      "pins": null,
+      "description": "",
+      "svgConnector": "",
+      "svgPinout": ""
+    },
+    {
+      "name": "N49091",
+      "pins": null,
+      "description": "",
+      "svgConnector": "",
+      "svgPinout": ""
+    },
+    {
+      "name": "N49170-02",
+      "pins": null,
+      "description": "",
+      "svgConnector": "",
+      "svgPinout": ""
+    },
+    {
+      "name": "N60793",
+      "pins": null,
+      "description": "",
+      "svgConnector": "",
+      "svgPinout": ""
+    },
+    {
+      "name": "N68582",
+      "pins": null,
+      "description": "",
+      "svgConnector": "",
+      "svgPinout": ""
+    },
+    {
+      "name": "N68583",
+      "pins": null,
+      "description": "",
+      "svgConnector": "",
+      "svgPinout": ""
+    },
+    {
+      "name": "N77182",
+      "pins": null,
+      "description": "",
+      "svgConnector": "",
+      "svgPinout": ""
+    },
+    {
+      "name": "N79782",
+      "pins": null,
+      "description": "",
+      "svgConnector": "",
+      "svgPinout": ""
+    },
+    {
+      "name": "N82675",
+      "pins": null,
+      "description": "",
+      "svgConnector": "",
+      "svgPinout": ""
+    },
+    {
+      "name": "N85134-02",
+      "pins": null,
+      "description": "",
+      "svgConnector": "",
+      "svgPinout": ""
+    },
+    {
+      "name": "N86045-01",
+      "pins": null,
+      "description": "",
+      "svgConnector": "",
+      "svgPinout": ""
+    },
+    {
+      "name": "N86045-02",
+      "pins": null,
+      "description": "",
+      "svgConnector": "",
+      "svgPinout": ""
+    },
+    {
+      "name": "N86045-03",
+      "pins": null,
+      "description": "",
+      "svgConnector": "",
+      "svgPinout": ""
+    },
+    {
+      "name": "N86045-04",
+      "pins": null,
+      "description": "",
+      "svgConnector": "",
+      "svgPinout": ""
+    },
+    {
+      "name": "N93416",
+      "pins": null,
+      "description": "",
+      "svgConnector": "",
+      "svgPinout": ""
+    }
+  ]
+}

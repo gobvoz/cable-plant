@@ -68,6 +68,7 @@ App boot flow now starts from static JSON served from `/public/data/index.json`:
 - user selects `table -> schema -> contract`
 - on contract open, app checks local data first
 - if no local data for that contract, app loads contract JSON from `contract.file`
+- connector types are also loaded from server static file `/public/data/ctypes.json`
 - all further edits are local-only in browser storage
 
 Contract JSON can be a multi-page manifest. This is useful when one contract has many pages (5, 20, etc.).
@@ -108,6 +109,22 @@ Table file format:
       "contracts": [
         { "id": "LG58-LG70", "rev": "A", "file": "/data/contracts/64-h020-lg58-lg70.json" }
       ]
+    }
+  ]
+}
+```
+
+Connector types file format:
+
+```json
+{
+  "types": [
+    {
+      "name": "N40168-01",
+      "pins": 34,
+      "description": "Main bulkhead connector",
+      "svgConnector": "",
+      "svgPinout": ""
     }
   ]
 }

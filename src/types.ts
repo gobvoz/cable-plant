@@ -228,3 +228,16 @@ export interface ServerTableFile {
   tableId: string;
   schemas: ServerSchema[];
 }
+
+export interface ServerCtype {
+  id?: string;
+  name: string;
+  pins?: number | null;
+  description?: string;
+  svgConnector?: string;
+  svgPinout?: string;
+}
+
+export interface ServerCtypesFile {
+  types: ServerCtype[];
+}

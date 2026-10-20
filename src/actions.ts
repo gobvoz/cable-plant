@@ -12,7 +12,7 @@ import {
   toggleAssemblyWire as dbToggleAssemblyWire,
   ensureContractLoaded,
 } from './db';
-import { ensureTableSchemasLoaded, loadServerCatalog } from './catalog';
+import { ensureTableSchemasLoaded, loadServerCatalog, loadServerCtypes } from './catalog';
 import { saveSchema } from './views/schema-form';
 import { saveTableAction } from './views/table-form';
 import { saveSkon, delSkon, skonBack, toggleAcc } from './views/skon-form';
@@ -95,7 +95,7 @@ export function doClear(): void {
 }
 
 export async function reloadCatalogAction(): Promise<void> {
-  await loadServerCatalog(true);
+  await Promise.all([loadServerCatalog(true), loadServerCtypes(true)]);
   set({});
   toast('Catalog reloaded');
 }

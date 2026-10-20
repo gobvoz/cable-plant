@@ -1,4 +1,13 @@
-import type { Table, Schema, Device, CType, Wire, Assembly, ServerIndex } from './types';
+import type {
+  Table,
+  Schema,
+  Device,
+  CType,
+  Wire,
+  Assembly,
+  ServerIndex,
+  ServerCtype,
+} from './types';
 import { uid, toast } from './utils';
 
 /* ── IndexedDB backup (iOS PWA localStorage eviction workaround) ── */
@@ -114,8 +123,8 @@ type ContractPayload = {
   table?: Partial<Table>;
   schema?: Partial<Schema>;
   contract?: string;
-  devices?: Partial<Device>[];
-  skon?: Partial<Device>[];
+  devices?: Array<Partial<Device> & { connector?: string; typeRef?: string }>;
+  skon?: Array<Partial<Device> & { connector?: string; typeRef?: string }>;
   ctypes?: Partial<CType>[];
   wires?: Partial<Wire>[];
   files?: string[];
@@ -234,9 +243,11 @@ function toContractPayloadFromDocPage(
 ): ContractPayload | null {
   if (!Array.isArray(payload.sections) || payload.sections.length === 0) return null;
 
+  type PayloadDevice = Partial<Device> & { connector?: string; typeRef?: string };
+
   const ctypes: Partial<CType>[] = [];
   const ctypeSeen = new Set<string>();
-  const devicesByCode = new Map<string, Partial<Device>>();
+  const devicesByCode = new Map<string, PayloadDevice>();
   const wires: Partial<Wire>[] = [];
 
   const headerDoc = typeof payload.document === 'string' ? null : payload.document;
@@ -271,6 +282,7 @@ function toContractPayloadFromDocPage(
           schemaId,
           code,
           typeId: null,
+          connector: row.connector,
           subtable: z.subtable,
           section: z.section,
           side: z.side,
@@ -278,6 +290,8 @@ function toContractPayloadFromDocPage(
           contracts: contract,
           accessories: [],
         });
+      } else if (!existing.connector && row.connector) {
+        existing.connector = row.connector;
       }
 
       if (row.connector && !ctypeSeen.has(row.connector)) {
@@ -370,6 +384,36 @@ function addContractToList(devContracts: string, contract: string): string {
     .filter(Boolean);
   if (!parts.includes(contract)) parts.push(contract);
   return parts.join(', ');
+}
+
+function backfillLocalDeviceTypeIds(schemaId: string, contract: string): void {
+  const devList = rd<Device>(KEY_SK);
+  const ctypeByName = new Map(rd<CType>(KEY_CT).map(c => [c.name.trim().toUpperCase(), c.id]));
+  const wires = rd<Wire>(KEY_W).filter(w => w.schemaId === schemaId && w.contract === contract);
+
+  const connectorByCode = new Map<string, string>();
+  for (const w of wires) {
+    for (const end of w.ends || []) {
+      const code = (end.code || '').trim();
+      const typeRef = (end.typeRef || '').trim().toUpperCase();
+      if (!code || !typeRef) continue;
+      if (!connectorByCode.has(code)) connectorByCode.set(code, typeRef);
+    }
+  }
+
+  let changed = false;
+  const next = devList.map(d => {
+    if (d.schemaId !== schemaId || d.typeId) return d;
+    if (!d.contracts || !containsContract(d.contracts, contract)) return d;
+    const typeRef = connectorByCode.get(d.code);
+    if (!typeRef) return d;
+    const typeId = ctypeByName.get(typeRef);
+    if (!typeId) return d;
+    changed = true;
+    return { ...d, typeId };
+  });
+
+  if (changed) wr(KEY_SK, next);
 }
 
 /* ── Tables ──────────────────────────────────────────────────── */
@@ -537,6 +581,57 @@ export const delCtype = (id: string): void =>
     rd<CType>(KEY_CT).filter(t => t.id !== id),
   );
 
+export const applyServerCtypes = (serverTypes: ServerCtype[]): void => {
+  const list = rd<CType>(KEY_CT);
+  const byName = new Map(list.map(t => [t.name.trim().toUpperCase(), t]));
+  const now = Date.now();
+  let changed = false;
+
+  for (const row of serverTypes) {
+    const name = (row.name || '').trim();
+    if (!name) continue;
+
+    const key = name.toUpperCase();
+    const hit = byName.get(key);
+    const patch = {
+      name,
+      pins: row.pins ?? null,
+      description: row.description || '',
+      svgConnector: row.svgConnector || '',
+      svgPinout: row.svgPinout || '',
+    };
+
+    if (!hit) {
+      const created: CType = {
+        id: row.id || uid(),
+        at: now,
+        ...patch,
+      };
+      list.push(created);
+      byName.set(key, created);
+      changed = true;
+      continue;
+    }
+
+    if (
+      hit.pins !== patch.pins ||
+      hit.description !== patch.description ||
+      hit.svgConnector !== patch.svgConnector ||
+      hit.svgPinout !== patch.svgPinout ||
+      hit.name !== patch.name
+    ) {
+      const idx = list.findIndex(t => t.id === hit.id);
+      if (idx >= 0) {
+        list[idx] = { ...list[idx], ...patch };
+        byName.set(key, list[idx]);
+        changed = true;
+      }
+    }
+  }
+
+  if (changed) wr(KEY_CT, list);
+};
+
 /* ── Devices (connectors on table) ──────────────────────────── */
 export const allDevice = (): Device[] => rd<Device>(KEY_SK);
 export const deviceBySchema = (sid: string): Device[] =>
@@ -630,6 +725,7 @@ export const ensureContractLoaded = async (
   file: string,
 ): Promise<'local' | 'server'> => {
   if (!schemaId || !contract || !file) throw new Error('Missing contract load parameters');
+  backfillLocalDeviceTypeIds(schemaId, contract);
   if (hasLocalContractData(schemaId, contract)) return 'local';
 
   const payloads = await resolvePayloads(file);
@@ -647,7 +743,7 @@ export const ensureContractLoaded = async (
   }
 
   const ctypeList = rd<CType>(KEY_CT);
-  const ctypeByName = new Map(ctypeList.map(c => [c.name.toUpperCase(), c]));
+  const ctypeByName = new Map(ctypeList.map(c => [c.name.trim().toUpperCase(), c]));
   const devList = rd<Device>(KEY_SK);
   const wireList = rd<Wire>(KEY_W);
   let ctypeChanged = false;
@@ -690,12 +786,15 @@ export const ensureContractLoaded = async (
     for (const d of inputDevices) {
       const code = (d.code || '').trim();
       if (!code) continue;
+      const connectorName = ((d.connector || d.typeRef || '') as string).trim().toUpperCase();
+      const inferredTypeId = connectorName ? (ctypeByName.get(connectorName)?.id ?? null) : null;
+      const resolvedTypeId = d.typeId ?? inferredTypeId ?? null;
       const idx = devList.findIndex(row => row.schemaId === schemaId && row.code === code);
       if (idx >= 0) {
         const prev = devList[idx];
         devList[idx] = {
           ...prev,
-          typeId: d.typeId ?? prev.typeId,
+          typeId: resolvedTypeId ?? prev.typeId,
           subtable: d.subtable ?? prev.subtable,
           section: d.section ?? prev.section,
           side: d.side ?? prev.side,
@@ -708,7 +807,7 @@ export const ensureContractLoaded = async (
           id: d.id || uid(),
           schemaId,
           code,
-          typeId: d.typeId ?? null,
+          typeId: resolvedTypeId,
           subtable: d.subtable ?? null,
           section: d.section ?? null,
           side: d.side ?? null,
