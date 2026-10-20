@@ -1,0 +1,8 @@
+{
+  "version": 1,
+  "tables": [
+    { "id": "64", "name": "64", "file": "/data/tables/64.json" },
+    { "id": "65", "name": "65", "file": "/data/tables/65.json" },
+    { "id": "66", "name": "66", "file": "/data/tables/66.json" }
+  ]
+}

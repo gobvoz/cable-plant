@@ -1,0 +1,52 @@
+{
+  "document": {
+    "title": "N63064986(LG95)",
+    "assembly": "64-H009",
+    "quantity": 8,
+    "page": "2/16",
+    "timestamp": "2026-02-16 8:30:52",
+    "rev": ""
+  },
+  "sections": [
+    {
+      "section": "CAB064GH-H009",
+      "rows": [
+        { "col": "YL", "loc": "EN", "device": "X64LU", "pos": "B", "connector": "N68788", "zone": "2-4 HAUT" },
+        { "col": "YL", "loc": "MT", "device": "X64P1", "pos": "F", "connector": "N68582", "zone": "3-3 BAS" },
+        { "col": "GN", "loc": "EN", "device": "X64LU", "pos": "A", "connector": "N68788", "zone": "2-4 HAUT" },
+        { "col": "GN", "loc": "EN", "device": "SC64D", "pos": "5", "connector": "N30630", "zone": "3-3 BAS" }
+      ]
+    },
+    {
+      "section": "CAB064HU-H009",
+      "rows": [
+        { "col": "GN", "loc": "EN", "device": "X64GA", "pos": "15", "connector": "N49091", "zone": "2-2 BAS" },
+        { "col": "GN", "loc": "IB", "device": "X6499A", "pos": "45", "connector": "N40168-01", "zone": "4-3 HAUT" },
+        { "col": "YL", "loc": "EN", "device": "X64GA", "pos": "6", "connector": "N49091", "zone": "2-2 BAS" },
+        { "col": "YL", "loc": "IB", "device": "X6499A", "pos": "44", "connector": "N40168-01", "zone": "4-3 HAUT" }
+      ]
+    },
+    {
+      "section": "CAB064SG-H009",
+      "rows": [
+        { "col": "YL", "loc": "EN", "device": "X64AYB1", "pos": "A", "connector": "N31229-05", "zone": "2-2 HAUT" },
+        { "col": "YL", "loc": "EN", "device": "X64YBB2", "pos": "A", "connector": "N31229-05", "zone": "3-3 HAUT" },
+        { "col": "GN", "loc": "EN", "device": "X64AYB1", "pos": "B", "connector": "N31229-05", "zone": "2-2 HAUT" },
+        { "col": "GN", "loc": "EN", "device": "X64YBB2", "pos": "B", "connector": "N31229-05", "zone": "3-3 HAUT" },
+        { "col": "DR", "loc": "EN", "device": "X64AYB1", "pos": "C", "connector": "N31229-05", "zone": "2-2 HAUT" },
+        { "col": "DR", "loc": "EN", "device": "X64YBB2", "pos": "C", "connector": "N31229-05", "zone": "3-3 HAUT" }
+      ]
+    },
+    {
+      "section": "CAB064YX-H009",
+      "rows": [
+        { "col": "YL", "loc": "EB", "device": "X6470B", "pos": "A", "connector": "N29923", "zone": "3-4 BAS" },
+        { "col": "YL", "loc": "EN", "device": "X64YBB1", "pos": "A", "connector": "N31229-05", "zone": "3-3 BAS" },
+        { "col": "GN", "loc": "EB", "device": "X6470B", "pos": "B", "connector": "N29923", "zone": "3-4 BAS" },
+        { "col": "GN", "loc": "EN", "device": "X64YBB1", "pos": "B", "connector": "N31229-05", "zone": "3-3 BAS" },
+        { "col": "DR", "loc": "EB", "device": "X6470B", "pos": "C", "connector": "N29923", "zone": "3-4 BAS" },
+        { "col": "DR", "loc": "EN", "device": "X64YBB1", "pos": "C", "connector": "N31229-05", "zone": "3-3 BAS" }
+      ]
+    }
+  ]
+}

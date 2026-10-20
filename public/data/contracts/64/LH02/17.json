@@ -1,0 +1,103 @@
+{
+  "document": {
+    "title": "N63064996(LH02)",
+    "assembly": "17",
+    "quantity": 14,
+    "page": "17 / 17",
+    "timestamp": "2026-04-13 9:37:44",
+    "rev": ""
+  },
+  "sections": [
+    {
+      "section": "339-H019",
+      "rows": [
+        { "col": "WH", "loc": "EN", "device": "SC64BJ", "pos": "2", "connector": "N30630", "zone": "3-3 - HAUT" },
+        { "col": "WH", "loc": "EN", "device": "X64V", "pos": "A", "connector": "15300027", "zone": "4-2 - BAS" }
+      ]
+    },
+    {
+      "section": "341-H019",
+      "rows": [
+        { "col": "WH", "loc": "EN", "device": "SC64BJ", "pos": "5", "connector": "N30630", "zone": "3-3 - HAUT" },
+        { "col": "WH", "loc": "EN", "device": "X64X", "pos": "A", "connector": "15300027", "zone": "3-4 - HAUT" }
+      ]
+    },
+    {
+      "section": "2674-H019",
+      "rows": [
+        { "col": "BK", "loc": "EN", "device": "SC64F", "pos": "2", "connector": "N30630", "zone": "3-3 - BAS" },
+        { "col": "BK", "loc": "EN", "device": "X64FY", "pos": "7", "connector": "N82675", "zone": "1-2 - HAUT" }
+      ]
+    },
+    {
+      "section": "607-H019",
+      "rows": [
+        { "col": "WH", "loc": "EN", "device": "SC64AD", "pos": "5", "connector": "N30630", "zone": "4-2 - BAS" },
+        { "col": "WH", "loc": "XB", "device": "X64C3", "pos": "A", "connector": "12040977", "zone": "4-3 - BAS" }
+      ]
+    },
+    {
+      "section": "5767-H019",
+      "rows": [
+        { "col": "BK", "loc": "BCR", "device": "BT81B3:-", "pos": "-", "connector": "", "zone": "" },
+        { "col": "BK", "loc": "BCR", "device": "SC64C", "pos": "A", "connector": "12059573", "zone": "1-3 - HAUT" }
+      ]
+    },
+    {
+      "section": "2559-H019",
+      "rows": [
+        { "col": "BK", "loc": "EN", "device": "SG64G", "pos": "2", "connector": "", "zone": "2-2 - BAS" },
+        { "col": "BK", "loc": "EN", "device": "X64AT9", "pos": "B", "connector": "12015792", "zone": "1-4 - BAS" }
+      ]
+    },
+    {
+      "section": "610-H019",
+      "rows": [
+        { "col": "WH", "loc": "EN", "device": "SC64AD", "pos": "6", "connector": "N30630", "zone": "4-2 - BAS" },
+        { "col": "WH", "loc": "XB", "device": "X64D3", "pos": "A", "connector": "12040977", "zone": "3-4 - BAS" }
+      ]
+    },
+    {
+      "section": "5466-H019",
+      "rows": [
+        { "col": "WH", "loc": "EN", "device": "SC64AF", "pos": "5", "connector": "N30630", "zone": "3-4 - BAS" },
+        { "col": "WH", "loc": "XB", "device": "X64S", "pos": "1", "connector": "N35086", "zone": "4-3 - BAS" }
+      ]
+    },
+    {
+      "section": "010-H019",
+      "rows": [
+        { "col": "RD", "loc": "BCR", "device": "LD64B1", "pos": "+", "connector": "", "zone": "1-3 - BAS" },
+        { "col": "RD", "loc": "EN", "device": "SC64CF", "pos": "9", "connector": "N30630", "zone": "2-2 - BAS" }
+      ]
+    },
+    {
+      "section": "2503-H019",
+      "rows": [
+        { "col": "RD", "loc": "BCR", "device": "BT81A3:+", "pos": "+", "connector": "", "zone": "" },
+        { "col": "RD", "loc": "BCR", "device": "SC64CM", "pos": "A", "connector": "12059573", "zone": "1-3 - HAUT" }
+      ]
+    },
+    {
+      "section": "2654-H019",
+      "rows": [
+        { "col": "WH", "loc": "MT", "device": "X64HA", "pos": "A", "connector": "12015791", "zone": "3-1 - HAUT" },
+        { "col": "WH", "loc": "MT", "device": "X64W", "pos": "A", "connector": "12033769", "zone": "2-4 - HAUT" }
+      ]
+    },
+    {
+      "section": "5800-H019",
+      "rows": [
+        { "col": "RD", "loc": "BCR", "device": "BB64A:03", "pos": "03", "connector": "", "zone": "" },
+        { "col": "RD", "loc": "BCR", "device": "X64AL", "pos": "A", "connector": "12066681", "zone": "1-4 - HAUT" }
+      ]
+    },
+    {
+      "section": "5794-H019",
+      "rows": [
+        { "col": "BK-RD", "loc": "BCR", "device": "ASM74M:IN", "pos": "IN", "connector": "", "zone": "" },
+        { "col": "BK-RD", "loc": "BCR", "device": "X64AP2", "pos": "1", "connector": "N110182-01", "zone": "1-4 - HAUT" }
+      ]
+    }
+  ]
+}

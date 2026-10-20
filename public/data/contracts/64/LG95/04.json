@@ -1,0 +1,47 @@
+{
+  "document": {
+    "title": "N63064986 (LG95)",
+    "assembly": "64-H009",
+    "quantity": 8,
+    "page": "4/16",
+    "timestamp": "2026-02-16 08:30:52",
+    "rev": ""
+  },
+  "sections": [
+    {
+      "section": "5682-H009",
+      "rows": [
+        { "col": "GY", "loc": "EN", "device": "SPR64C", "pos": "TP01", "connector": "", "zone": "3-2 HAUT" },
+        { "col": "GY", "loc": "IB", "device": "SPR64A", "pos": "TP07", "connector": "", "zone": "4-4 HAUT" }
+      ]
+    },
+    {
+      "section": "5642-H009",
+      "rows": [
+        { "col": "GY", "loc": "BCR", "device": "SPR64A", "pos": "TP03", "connector": "", "zone": "2-1 BAS" },
+        { "col": "GY", "loc": "EN", "device": "SPR64B", "pos": "TP05", "connector": "", "zone": "4-3 BAS" }
+      ]
+    },
+    {
+      "section": "5643-H009",
+      "rows": [
+        { "col": "GY", "loc": "BCR", "device": "SPR64A", "pos": "TP04", "connector": "", "zone": "2-1 BAS" },
+        { "col": "GY", "loc": "EN", "device": "SPR64B", "pos": "TP06", "connector": "", "zone": "4-3 BAS" }
+      ]
+    },
+    {
+      "section": "5644-H009",
+      "rows": [
+        { "col": "GY", "loc": "BCR", "device": "SPR64A", "pos": "TP05", "connector": "", "zone": "2-1 BAS" },
+        { "col": "GY", "loc": "MT", "device": "SPR64A", "pos": "TP02", "connector": "", "zone": "4-1 BAS" }
+      ]
+    },
+    {
+      "section": "5645-H009",
+      "rows": [
+        { "col": "GY", "loc": "EN", "device": "SPR64F", "pos": "TP01", "connector": "", "zone": "1-4 BAS" },
+        { "col": "GY", "loc": "MT", "device": "SPR64A", "pos": "TP03", "connector": "", "zone": "4-1 BAS" }
+      ]
+    }
+  ]
+}

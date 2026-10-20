@@ -1,0 +1,117 @@
+{
+  "document": {
+    "title": "N63064996(LH02)",
+    "assembly": "64-H019",
+    "quantity": 14,
+    "page": "3/17",
+    "timestamp": "2026-04-13 9:37:44",
+    "rev": ""
+  },
+  "sections": [
+    {
+      "section": "5523-H019",
+      "rows": [
+        { "col": "GY", "loc": "ER", "device": "SPR64B", "pos": "TP01", "connector": "", "zone": "4-3 - HAUT" },
+        { "col": "GY", "loc": "IB", "device": "SPR64A", "pos": "TP01", "connector": "", "zone": "3-4 - BAS" }
+      ]
+    },
+    {
+      "section": "5624-H019",
+      "rows": [
+        { "col": "GY", "loc": "ER", "device": "SPR64B", "pos": "TP02", "connector": "", "zone": "4-3 - HAUT" },
+        { "col": "GY", "loc": "IB", "device": "SPR64A", "pos": "TP02", "connector": "", "zone": "3-4 - BAS" }
+      ]
+    },
+    {
+      "section": "5625-H019",
+      "rows": [
+        { "col": "GY", "loc": "ER", "device": "SPR64B", "pos": "TP03", "connector": "", "zone": "4-3 - HAUT" },
+        { "col": "GY", "loc": "IB", "device": "SPR64A", "pos": "TP03", "connector": "", "zone": "3-4 - BAS" }
+      ]
+    },
+    {
+      "section": "5632-H019",
+      "rows": [
+        { "col": "GY", "loc": "EN", "device": "SPR64B", "pos": "TP01", "connector": "", "zone": "2-2 - HAUT" },
+        { "col": "GY", "loc": "IB", "device": "SPR64A", "pos": "TP10", "connector": "", "zone": "3-4 - BAS" }
+      ]
+    },
+    {
+      "section": "5633-H019",
+      "rows": [
+        { "col": "GY", "loc": "EN", "device": "SPR64B", "pos": "TP02", "connector": "", "zone": "2-2 - HAUT" },
+        { "col": "GY", "loc": "IB", "device": "SPR64A", "pos": "TP11", "connector": "", "zone": "3-4 - BAS" }
+      ]
+    },
+    {
+      "section": "5634-H019",
+      "rows": [
+        { "col": "GY", "loc": "EN", "device": "SPR64B", "pos": "TP03", "connector": "", "zone": "2-2 - HAUT" },
+        { "col": "GY", "loc": "IB", "device": "SPR64A", "pos": "TP12", "connector": "", "zone": "3-4 - BAS" }
+      ]
+    },
+    {
+      "section": "5626-H019",
+      "rows": [
+        { "col": "GY", "loc": "EN", "device": "SPR64H", "pos": "TP01", "connector": "", "zone": "1-1 - BAS" },
+        { "col": "GY", "loc": "IB", "device": "SPR64A", "pos": "TP04", "connector": "", "zone": "3-4 - BAS" }
+      ]
+    },
+    {
+      "section": "5627-H019",
+      "rows": [
+        { "col": "GY", "loc": "EB", "device": "SPR64A", "pos": "TP01", "connector": "", "zone": "3-2 - HAUT" },
+        { "col": "GY", "loc": "IB", "device": "SPR64A", "pos": "TP05", "connector": "", "zone": "3-4 - BAS" }
+      ]
+    },
+    {
+      "section": "5628-H019",
+      "rows": [
+        { "col": "GY", "loc": "EB", "device": "SPR64A", "pos": "TP02", "connector": "", "zone": "3-2 - HAUT" },
+        { "col": "GY", "loc": "IB", "device": "SPR64A", "pos": "TP06", "connector": "", "zone": "3-4 - BAS" }
+      ]
+    },
+    {
+      "section": "5629-H019",
+      "rows": [
+        { "col": "GY", "loc": "EB", "device": "SPR64A", "pos": "TP03", "connector": "", "zone": "3-2 - HAUT" },
+        { "col": "GY", "loc": "IB", "device": "SPR64A", "pos": "TP07", "connector": "", "zone": "3-4 - BAS" }
+      ]
+    },
+    {
+      "section": "5630-H019",
+      "rows": [
+        { "col": "GY", "loc": "EB", "device": "SPR64A", "pos": "TP04", "connector": "", "zone": "3-2 - HAUT" },
+        { "col": "GY", "loc": "IB", "device": "SPR64A", "pos": "TP08", "connector": "", "zone": "3-4 - BAS" }
+      ]
+    },
+    {
+      "section": "5631-H019",
+      "rows": [
+        { "col": "GY", "loc": "EN", "device": "SPR64C", "pos": "TP01", "connector": "", "zone": "2-3 - HAUT" },
+        { "col": "GY", "loc": "IB", "device": "SPR64A", "pos": "TP09", "connector": "", "zone": "3-4 - BAS" }
+      ]
+    },
+    {
+      "section": "5637-H019",
+      "rows": [
+        { "col": "GY", "loc": "IB", "device": "SPR64A", "pos": "TP13", "connector": "", "zone": "3-4 - BAS" },
+        { "col": "GY", "loc": "MT", "device": "SPR64A", "pos": "TP01", "connector": "", "zone": "3-4 - BAS" }
+      ]
+    },
+    {
+      "section": "5638-H019",
+      "rows": [
+        { "col": "GY", "loc": "IB", "device": "SPR64A", "pos": "TP14", "connector": "", "zone": "3-4 - BAS" },
+        { "col": "GY", "loc": "MT", "device": "SPR64A", "pos": "TP02", "connector": "", "zone": "3-4 - BAS" }
+      ]
+    },
+    {
+      "section": "5639-H019",
+      "rows": [
+        { "col": "GY", "loc": "BCR", "device": "SPR64A", "pos": "TP01", "connector": "", "zone": "1-3 - HAUT" },
+        { "col": "GY", "loc": "IB", "device": "SPR64A", "pos": "TP15", "connector": "", "zone": "3-4 - BAS" }
+      ]
+    }
+  ]
+}

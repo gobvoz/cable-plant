@@ -1,0 +1,124 @@
+{
+  "document": {
+    "title": "N63064986(LG95)",
+    "assembly": "64-H009",
+    "quantity": 8,
+    "page": "13/16",
+    "timestamp": "2026-02-16 8:30:52",
+    "rev": ""
+  },
+  "sections": [
+    {
+      "section": "637-H009",
+      "rows": [
+        { "col": "BK", "loc": "EN", "device": "SC64CB", "pos": "6", "connector": "N30630", "zone": "2-3 - BAS" },
+        { "col": "BK", "loc": "EN", "device": "SG64G", "pos": "1", "connector": "", "zone": "2-4 - BAS" }
+      ]
+    },
+    {
+      "section": "639-H009",
+      "rows": [
+        { "col": "BK", "loc": "EN", "device": "SC64CB", "pos": "12", "connector": "N30630", "zone": "2-3 - BAS" },
+        { "col": "BK", "loc": "EN", "device": "SG64G", "pos": "1", "connector": "", "zone": "2-4 - BAS" }
+      ]
+    },
+    {
+      "section": "800-H009",
+      "rows": [
+        { "col": "BK", "loc": "EN", "device": "SC64CB", "pos": "10", "connector": "N30630", "zone": "2-3 - BAS" },
+        { "col": "BK", "loc": "EN", "device": "X64GA", "pos": "17", "connector": "N49091", "zone": "2-2 - BAS" }
+      ]
+    },
+    {
+      "section": "801-H009",
+      "rows": [
+        { "col": "BK", "loc": "EN", "device": "SC64CB", "pos": "9", "connector": "N30630", "zone": "2-3 - BAS" },
+        { "col": "BK", "loc": "EN", "device": "X64GA", "pos": "18", "connector": "N49091", "zone": "2-2 - BAS" }
+      ]
+    },
+    {
+      "section": "2223-H009",
+      "rows": [
+        { "col": "BK", "loc": "EN", "device": "SG64Z", "pos": "1", "connector": "N86045-03", "zone": "2-4 - HAUT" },
+        { "col": "BK", "loc": "EN", "device": "X64LP", "pos": "02", "connector": "", "zone": "3-1 - HAUT" }
+      ]
+    },
+    {
+      "section": "2224-H009",
+      "rows": [
+        { "col": "BK", "loc": "EN", "device": "SG64Z", "pos": "2", "connector": "N86045-03", "zone": "2-4 - HAUT" },
+        { "col": "BK", "loc": "EN", "device": "X64LP", "pos": "08", "connector": "", "zone": "3-1 - HAUT" }
+      ]
+    },
+    {
+      "section": "2395-H009",
+      "rows": [
+        { "col": "WH", "loc": "EN", "device": "SC64BB", "pos": "11", "connector": "N30630", "zone": "4-1 - HAUT" },
+        { "col": "WH", "loc": "EN", "device": "X64ZN", "pos": "3", "connector": "15344052", "zone": "5-1 - BAS" }
+      ]
+    },
+    {
+      "section": "2396-H009",
+      "rows": [
+        { "col": "WH", "loc": "EN", "device": "SC64BB", "pos": "3", "connector": "N30630", "zone": "4-1 - HAUT" },
+        { "col": "WH", "loc": "EN", "device": "X64ZN", "pos": "6", "connector": "15344052", "zone": "5-1 - BAS" }
+      ]
+    },
+    {
+      "section": "2397-H009",
+      "rows": [
+        { "col": "WH", "loc": "EN", "device": "SC64BB", "pos": "12", "connector": "N30630", "zone": "4-1 - HAUT" },
+        { "col": "WH", "loc": "EN", "device": "X64ZS", "pos": "3", "connector": "15344052", "zone": "3-2 - BAS" }
+      ]
+    },
+    {
+      "section": "2398-H009",
+      "rows": [
+        { "col": "WH", "loc": "EN", "device": "SC64BB", "pos": "2", "connector": "N30630", "zone": "4-1 - HAUT" },
+        { "col": "WH", "loc": "EN", "device": "X64ZS", "pos": "6", "connector": "15344052", "zone": "3-2 - BAS" }
+      ]
+    },
+    {
+      "section": "1030-H009",
+      "rows": [
+        { "col": "RD", "loc": "BCR", "device": "ASM74A:IN", "pos": "IN", "connector": "", "zone": "" },
+        { "col": "RD", "loc": "BCR", "device": "X64CC", "pos": "A", "connector": "12059573", "zone": "2-1 - BAS" }
+      ]
+    },
+    {
+      "section": "1031-H009",
+      "rows": [
+        { "col": "RD", "loc": "BCR", "device": "X64CC", "pos": "B", "connector": "12059573", "zone": "2-1 - BAS" },
+        { "col": "RD", "loc": "EN", "device": "SC64CF", "pos": "4", "connector": "N30630", "zone": "2-3 - BAS" }
+      ]
+    },
+    {
+      "section": "1034-H009",
+      "rows": [
+        { "col": "RD", "loc": "BCR", "device": "X64CC", "pos": "F", "connector": "12059573", "zone": "2-1 - BAS" },
+        { "col": "RD", "loc": "EN", "device": "SC64CG", "pos": "4", "connector": "N30630", "zone": "2-3 - BAS" }
+      ]
+    },
+    {
+      "section": "1642-H009",
+      "rows": [
+        { "col": "RD", "loc": "BCR", "device": "BB81A:03", "pos": "03", "connector": "", "zone": "" },
+        { "col": "RD", "loc": "BCR", "device": "X64CC", "pos": "E", "connector": "12059573", "zone": "2-1 - BAS" }
+      ]
+    },
+    {
+      "section": "2429-H009",
+      "rows": [
+        { "col": "RD", "loc": "BCR", "device": "BT81A3:+", "pos": "+", "connector": "", "zone": "" },
+        { "col": "RD", "loc": "BCR", "device": "X64CC", "pos": "C", "connector": "12059573", "zone": "2-1 - BAS" }
+      ]
+    },
+    {
+      "section": "2379-H009",
+      "rows": [
+        { "col": "RD", "loc": "EN", "device": "X64LU", "pos": "C", "connector": "N68788", "zone": "2-4 - HAUT" },
+        { "col": "RD", "loc": "MT", "device": "X64P1", "pos": "S", "connector": "N68582", "zone": "3-3 - BAS" }
+      ]
+    }
+  ]
+}

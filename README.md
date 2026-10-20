@@ -59,6 +59,60 @@ Main keys in `localStorage`:
 - `cp_ctype`
 - `cp_wire`
 
+## Server static catalog (read-only)
+
+App boot flow now starts from static JSON served from `/public/data/index.json`:
+
+- load only `tables` at app start
+- when user opens a table, load that table's schemas/contracts from its table file
+- user selects `table -> schema -> contract`
+- on contract open, app checks local data first
+- if no local data for that contract, app loads contract JSON from `contract.file`
+- all further edits are local-only in browser storage
+
+Contract JSON can be a multi-page manifest. This is useful when one contract has many pages (5, 20, etc.).
+
+Manifest format (aggregates multiple page files):
+
+```json
+{
+  "files": [
+    "/data/contracts/64-h020-lg58-lg70-p01.json",
+    "/data/contracts/64-h020-lg58-lg70-p02.json",
+    "/data/contracts/64-h020-lg58-lg70-p03.json"
+  ]
+}
+```
+
+Each page file can contain `ctypes`, `devices` (or `skon`) and `wires` arrays. All pages are merged into local storage on first contract open.
+
+`index.json` format (tables only):
+
+```json
+{
+  "version": 1,
+  "tables": [{ "id": "t64", "name": "64", "file": "/data/tables/t64.json" }]
+}
+```
+
+Table file format:
+
+```json
+{
+  "tableId": "t64",
+  "schemas": [
+    {
+      "id": "t64-h020",
+      "tableId": "t64",
+      "cableType": "H020",
+      "contracts": [
+        { "id": "LG58-LG70", "rev": "A", "file": "/data/contracts/64-h020-lg58-lg70.json" }
+      ]
+    }
+  ]
+}
+```
+
 ## Run
 
 ```bash

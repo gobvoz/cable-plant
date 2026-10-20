@@ -190,3 +190,41 @@ export interface KittingJson {
   };
   items: KittingEntry[];
 }
+
+export interface ServerContract {
+  /** Contract identifier, e.g. "LG58-LG70" */
+  id: string;
+  /** Optional display revision, e.g. "A" */
+  rev?: string;
+  /** Relative URL to static contract payload JSON */
+  file: string;
+}
+
+export interface ServerTable {
+  id: string;
+  name: string;
+  notes?: string;
+  /** Optional path to table detail JSON with schemas/contracts */
+  file?: string;
+}
+
+export interface ServerSchema {
+  id: string;
+  tableId: string;
+  cableType: string;
+  subtables?: number;
+  notes?: string;
+  contracts: ServerContract[];
+}
+
+export interface ServerIndex {
+  version: string | number;
+  tables: ServerTable[];
+  /** Optional legacy inline schemas; prefer per-table files for lazy loading */
+  schemas?: ServerSchema[];
+}
+
+export interface ServerTableFile {
+  tableId: string;
+  schemas: ServerSchema[];
+}

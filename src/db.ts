@@ -1,4 +1,4 @@
-import type { Table, Schema, Device, CType, Wire, Assembly } from './types';
+import type { Table, Schema, Device, CType, Wire, Assembly, ServerIndex } from './types';
 import { uid, toast } from './utils';
 
 /* ── IndexedDB backup (iOS PWA localStorage eviction workaround) ── */
@@ -110,6 +110,268 @@ const KEY_SK = 'cp_skon';
 const KEY_CT = 'cp_ctype';
 const KEY_W = 'cp_wire';
 
+type ContractPayload = {
+  table?: Partial<Table>;
+  schema?: Partial<Schema>;
+  contract?: string;
+  devices?: Partial<Device>[];
+  skon?: Partial<Device>[];
+  ctypes?: Partial<CType>[];
+  wires?: Partial<Wire>[];
+  files?: string[];
+  pages?: ContractPayload[];
+  document?:
+    | string
+    | {
+        page?: string;
+        timestamp?: string;
+        rev?: string;
+      };
+  sections?: Array<{
+    section?: string;
+    rows?: Array<{
+      col?: string;
+      loc?: string;
+      device?: string;
+      pos?: string;
+      connector?: string;
+      zone?: string;
+    }>;
+  }>;
+};
+
+function isNonEmptyStringArray(value: unknown): value is string[] {
+  return Array.isArray(value) && value.every(v => typeof v === 'string' && v.trim().length > 0);
+}
+
+function resolvePayloadUrl(baseFile: string, rel: string): string {
+  if (/^https?:\/\//i.test(rel)) return rel;
+  if (rel.startsWith('/')) return rel;
+  try {
+    const base = new URL(baseFile, window.location.origin);
+    return new URL(rel, base).pathname;
+  } catch {
+    return rel;
+  }
+}
+
+async function fetchPayload(file: string): Promise<ContractPayload> {
+  const resp = await fetch(file, { cache: 'no-store' });
+  if (!resp.ok) throw new Error(`Failed to load ${file}: ${resp.status}`);
+  return (await resp.json()) as ContractPayload;
+}
+
+async function resolvePayloads(
+  file: string,
+  visited = new Set<string>(),
+): Promise<ContractPayload[]> {
+  const resolvedFile = resolvePayloadUrl(window.location.pathname, file);
+  if (visited.has(resolvedFile)) return [];
+  visited.add(resolvedFile);
+
+  const payload = await fetchPayload(resolvedFile);
+  const out: ContractPayload[] = [];
+
+  if (Array.isArray(payload.pages) && payload.pages.length > 0) {
+    out.push(...payload.pages);
+  }
+
+  if (isNonEmptyStringArray(payload.files)) {
+    for (const child of payload.files) {
+      const childFile = resolvePayloadUrl(resolvedFile, child);
+      const childPayloads = await resolvePayloads(childFile, visited);
+      out.push(...childPayloads);
+    }
+  }
+
+  if (
+    Array.isArray(payload.ctypes) ||
+    Array.isArray(payload.devices) ||
+    Array.isArray(payload.skon) ||
+    Array.isArray(payload.wires) ||
+    Array.isArray(payload.sections)
+  ) {
+    out.push(payload);
+  }
+
+  return out;
+}
+
+function splitDocPage(pageRaw: string): { page: string; pageTotal: string } {
+  const p = (pageRaw || '').trim();
+  if (!p) return { page: '', pageTotal: '' };
+  if (!p.includes('/')) return { page: p, pageTotal: '' };
+  const [curr, total] = p.split('/').map(v => v.trim());
+  return { page: curr || '', pageTotal: total || '' };
+}
+
+function buildDeviceCode(loc: string, device: string): string {
+  const cleanLoc = (loc || '').trim().toUpperCase();
+  const cleanDevice = (device || '').trim().toUpperCase();
+  if (cleanLoc && cleanDevice) return `${cleanLoc}-${cleanDevice}`;
+  return cleanDevice || cleanLoc;
+}
+
+function parseZoneLabel(zone: string): {
+  subtable: number | null;
+  section: number | null;
+  side: 'Haut' | 'Bas' | null;
+} {
+  const m = (zone || '').trim().match(/^(\d+)\s*-\s*(\d+)\s+(?:-\s*)?(Haut|Bas)$/i);
+  if (!m) return { subtable: null, section: null, side: null };
+  const sideRaw = (m[3] || '').toLowerCase();
+  return {
+    subtable: parseInt(m[1], 10),
+    section: parseInt(m[2], 10),
+    side: sideRaw === 'haut' ? 'Haut' : 'Bas',
+  };
+}
+
+function toContractPayloadFromDocPage(
+  payload: ContractPayload,
+  schemaId: string,
+  contract: string,
+): ContractPayload | null {
+  if (!Array.isArray(payload.sections) || payload.sections.length === 0) return null;
+
+  const ctypes: Partial<CType>[] = [];
+  const ctypeSeen = new Set<string>();
+  const devicesByCode = new Map<string, Partial<Device>>();
+  const wires: Partial<Wire>[] = [];
+
+  const headerDoc = typeof payload.document === 'string' ? null : payload.document;
+  const pageInfo = splitDocPage(headerDoc?.page || '');
+  const docTimestamp = headerDoc?.timestamp || '';
+  const docRev = headerDoc?.rev || '';
+
+  let pageOrder = 0;
+
+  for (const sec of payload.sections) {
+    const sectionRef = (sec.section || '').trim().toUpperCase();
+    const rows = Array.isArray(sec.rows) ? sec.rows : [];
+    if (!sectionRef || rows.length < 2) continue;
+
+    const normalized = rows.map(r => ({
+      col: (r.col || '').trim().toUpperCase(),
+      loc: (r.loc || '').trim().toUpperCase(),
+      device: (r.device || '').trim().toUpperCase(),
+      pos: (r.pos || '').trim().toUpperCase(),
+      connector: (r.connector || '').trim().toUpperCase(),
+      zone: (r.zone || '').trim(),
+    }));
+
+    for (const row of normalized) {
+      const code = buildDeviceCode(row.loc, row.device);
+      if (!code) continue;
+
+      const z = parseZoneLabel(row.zone);
+      const existing = devicesByCode.get(code);
+      if (!existing) {
+        devicesByCode.set(code, {
+          schemaId,
+          code,
+          typeId: null,
+          subtable: z.subtable,
+          section: z.section,
+          side: z.side,
+          notes: '',
+          contracts: contract,
+          accessories: [],
+        });
+      }
+
+      if (row.connector && !ctypeSeen.has(row.connector)) {
+        ctypeSeen.add(row.connector);
+        ctypes.push({
+          name: row.connector,
+          pins: null,
+          description: '',
+          svgConnector: '',
+          svgPinout: '',
+        });
+      }
+    }
+
+    const groups = new Map<string, typeof normalized>();
+    if (normalized.length === 2) {
+      groups.set(sectionRef, normalized);
+    } else {
+      const byColor = new Map<string, typeof normalized>();
+      for (const row of normalized) {
+        const color = row.col;
+        if (!color) continue;
+        const arr = byColor.get(color) || [];
+        arr.push(row);
+        byColor.set(color, arr);
+      }
+      byColor.forEach((rowsByColor, color) => {
+        if (rowsByColor.length === 2) groups.set(`${sectionRef}:${color}`, rowsByColor);
+      });
+    }
+
+    groups.forEach((wireRows, wireRef) => {
+      const wireNum = wireRef.split('-')[0] || wireRef;
+      const color = (wireRows[0]?.col || '').trim();
+      const ends = wireRows.map(r => {
+        const z = parseZoneLabel(r.zone);
+        return {
+          loc: r.loc,
+          device: r.device,
+          code: buildDeviceCode(r.loc, r.device),
+          pos: r.pos,
+          typeRef: r.connector,
+          zone: r.zone,
+          subtable: z.subtable,
+          section: z.section,
+          side: z.side,
+        };
+      });
+
+      wires.push({
+        schemaId,
+        wireRef,
+        wireNum,
+        color,
+        contract,
+        page: pageInfo.page,
+        pageTotal: pageInfo.pageTotal,
+        docTimestamp,
+        docRev,
+        pageOrder: pageOrder++,
+        ends,
+      });
+    });
+  }
+
+  return {
+    contract,
+    ctypes,
+    devices: [...devicesByCode.values()],
+    wires,
+  };
+}
+
+function normalizeContracts(input: string[] | undefined): string[] {
+  return [...new Set((input || []).map(v => v.trim()).filter(Boolean))];
+}
+
+function containsContract(devContracts: string, contract: string): boolean {
+  const parts = devContracts
+    .split(',')
+    .map(v => v.trim())
+    .filter(Boolean);
+  return parts.includes(contract);
+}
+
+function addContractToList(devContracts: string, contract: string): string {
+  const parts = devContracts
+    .split(',')
+    .map(v => v.trim())
+    .filter(Boolean);
+  if (!parts.includes(contract)) parts.push(contract);
+  return parts.join(', ');
+}
+
 /* ── Tables ──────────────────────────────────────────────────── */
 export const allTable = (): Table[] => rd<Table>(KEY_T);
 export const getTable = (id: string): Table | undefined => rd<Table>(KEY_T).find(t => t.id === id);
@@ -165,6 +427,58 @@ export const migrateToV8 = (): void => {
 
   wr(KEY_S, updatedSchemas as unknown as Schema[]);
   wr(KEY_T, tables);
+};
+
+export const applyServerTables = (tablesIn: ServerIndex['tables']): void => {
+  const now = Date.now();
+  const tables: Table[] = tablesIn.map(t => ({
+    id: t.id,
+    name: t.name,
+    notes: t.notes || '',
+    at: now,
+  }));
+
+  wr(KEY_T, tables);
+};
+
+export const applyServerSchemasForTable = (
+  tableId: string,
+  serverSchemas: Array<{
+    id: string;
+    tableId: string;
+    cableType: string;
+    subtables?: number;
+    notes?: string;
+    contracts: Array<{ id: string }>;
+  }>,
+): void => {
+  const now = Date.now();
+
+  const schemas: Schema[] = serverSchemas.map(s => ({
+    id: s.id,
+    tableId: s.tableId,
+    cableType: s.cableType,
+    subtables: s.subtables ?? 5,
+    contracts: normalizeContracts(s.contracts.map(c => c.id)),
+    notes: s.notes || '',
+    at: now,
+  }));
+
+  const keep = rd<Schema>(KEY_S).filter(s => s.tableId !== tableId);
+  wr(KEY_S, [...keep, ...schemas]);
+};
+
+export const applyServerStructure = (index: ServerIndex): void => {
+  applyServerTables(index.tables);
+  if (Array.isArray(index.schemas)) {
+    const byTable: Record<string, typeof index.schemas> = {};
+    for (const s of index.schemas) {
+      (byTable[s.tableId] ??= []).push(s);
+    }
+    Object.entries(byTable).forEach(([tableId, schemas]) => {
+      applyServerSchemasForTable(tableId, schemas);
+    });
+  }
 };
 
 /* ── Cable plans ─────────────────────────────────────────────── */
@@ -297,6 +611,149 @@ export const importAll = (d: Record<string, unknown>): void => {
   if (Array.isArray(d?.wires)) wr(KEY_W, d.wires as Wire[]);
   // Run migration so old backups with tableNumber → tableId are handled
   migrateToV8();
+};
+
+export const hasLocalContractData = (schemaId: string, contract: string): boolean => {
+  if (!contract) return false;
+
+  const hasWire = rd<Wire>(KEY_W).some(w => w.schemaId === schemaId && w.contract === contract);
+  if (hasWire) return true;
+
+  return rd<Device>(KEY_SK).some(
+    d => d.schemaId === schemaId && !!d.contracts && containsContract(d.contracts, contract),
+  );
+};
+
+export const ensureContractLoaded = async (
+  schemaId: string,
+  contract: string,
+  file: string,
+): Promise<'local' | 'server'> => {
+  if (!schemaId || !contract || !file) throw new Error('Missing contract load parameters');
+  if (hasLocalContractData(schemaId, contract)) return 'local';
+
+  const payloads = await resolvePayloads(file);
+  if (payloads.length === 0) throw new Error(`No contract payload data found in ${file}`);
+  const now = Date.now();
+
+  const schemas = rd<Schema>(KEY_S);
+  const schemaIdx = schemas.findIndex(s => s.id === schemaId);
+  if (schemaIdx >= 0 && !schemas[schemaIdx].contracts.includes(contract)) {
+    schemas[schemaIdx] = {
+      ...schemas[schemaIdx],
+      contracts: [...schemas[schemaIdx].contracts, contract],
+    };
+    wr(KEY_S, schemas);
+  }
+
+  const ctypeList = rd<CType>(KEY_CT);
+  const ctypeByName = new Map(ctypeList.map(c => [c.name.toUpperCase(), c]));
+  const devList = rd<Device>(KEY_SK);
+  const wireList = rd<Wire>(KEY_W);
+  let ctypeChanged = false;
+  let devChanged = false;
+  let wireChanged = false;
+
+  for (const rawPayload of payloads) {
+    const payload =
+      Array.isArray(rawPayload.sections) && rawPayload.sections.length > 0
+        ? toContractPayloadFromDocPage(rawPayload, schemaId, contract) || rawPayload
+        : rawPayload;
+
+    if (Array.isArray(payload.ctypes)) {
+      for (const row of payload.ctypes) {
+        const name = (row.name || '').trim();
+        if (!name) continue;
+        const hit = ctypeByName.get(name.toUpperCase());
+        if (!hit) {
+          const created: CType = {
+            id: row.id || uid(),
+            name,
+            pins: row.pins ?? null,
+            description: row.description || '',
+            svgConnector: row.svgConnector || '',
+            svgPinout: row.svgPinout || '',
+            at: now,
+          };
+          ctypeList.push(created);
+          ctypeByName.set(created.name.toUpperCase(), created);
+          ctypeChanged = true;
+        }
+      }
+    }
+
+    const inputDevices = Array.isArray(payload.devices)
+      ? payload.devices
+      : Array.isArray(payload.skon)
+        ? payload.skon
+        : [];
+    for (const d of inputDevices) {
+      const code = (d.code || '').trim();
+      if (!code) continue;
+      const idx = devList.findIndex(row => row.schemaId === schemaId && row.code === code);
+      if (idx >= 0) {
+        const prev = devList[idx];
+        devList[idx] = {
+          ...prev,
+          typeId: d.typeId ?? prev.typeId,
+          subtable: d.subtable ?? prev.subtable,
+          section: d.section ?? prev.section,
+          side: d.side ?? prev.side,
+          notes: d.notes ?? prev.notes,
+          accessories: Array.isArray(d.accessories) ? d.accessories : prev.accessories,
+          contracts: addContractToList(prev.contracts || '', contract),
+        };
+      } else {
+        devList.push({
+          id: d.id || uid(),
+          schemaId,
+          code,
+          typeId: d.typeId ?? null,
+          subtable: d.subtable ?? null,
+          section: d.section ?? null,
+          side: d.side ?? null,
+          notes: d.notes || '',
+          contracts: addContractToList(d.contracts || '', contract),
+          accessories: Array.isArray(d.accessories) ? d.accessories : [],
+          at: now,
+        });
+      }
+      devChanged = true;
+    }
+
+    if (Array.isArray(payload.wires)) {
+      for (const w of payload.wires) {
+        const wireRef = (w.wireRef || '').trim();
+        if (!wireRef) continue;
+        const idx = wireList.findIndex(row => row.schemaId === schemaId && row.wireRef === wireRef);
+        const normalized: Wire = {
+          id: w.id || (idx >= 0 ? wireList[idx].id : uid()),
+          schemaId,
+          wireRef,
+          wireNum: w.wireNum || wireRef.split('-')[0] || wireRef,
+          color: w.color || '',
+          contract: w.contract || contract,
+          page: w.page || '',
+          pageTotal: w.pageTotal || '',
+          docTimestamp: w.docTimestamp || '',
+          docRev: w.docRev || '',
+          pageOrder: w.pageOrder ?? 0,
+          ends: Array.isArray(w.ends) ? w.ends : [],
+          at: w.at || now,
+        };
+
+        if (idx >= 0) wireList[idx] = { ...wireList[idx], ...normalized };
+        else wireList.push(normalized);
+        wireChanged = true;
+      }
+    }
+  }
+
+  if (ctypeChanged) wr(KEY_CT, ctypeList);
+  if (devChanged) wr(KEY_SK, devList);
+  if (wireChanged) wr(KEY_W, wireList);
+
+  return 'server';
 };
 
 export const clearAll = (): void => {

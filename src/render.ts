@@ -6,6 +6,8 @@ import { viewCtypes, viewCtypeForm } from './views/ctypes';
 import { viewTableForm } from './views/table-form';
 import { viewSchemaForm } from './views/schema-form';
 import { viewSchema } from './views/schema';
+import { viewTable } from './views/table';
+import { viewContracts } from './views/contracts';
 import { viewSkonForm } from './views/skon-form';
 import { viewImportDoc } from './views/import-doc';
 import { renderModal } from './modal';
@@ -14,7 +16,9 @@ export function render(): void {
   const fns: Record<string, () => string> = {
     home: viewHome,
     'table-form': viewTableForm,
+    table: viewTable,
     'schema-form': viewSchemaForm,
+    contracts: viewContracts,
     schema: viewSchema,
     'skon-form': viewSkonForm,
     'import-doc': viewImportDoc,

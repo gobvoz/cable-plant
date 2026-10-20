@@ -1,0 +1,27 @@
+{
+  "tableId": "64",
+  "schemas": [
+    {
+      "id": "64-H009",
+      "tableId": "64",
+      "cableType": "H009",
+      "contracts": [
+        {
+          "id": "LG95",
+          "file": "/data/contracts/64/LG95/manifest.json"
+        }
+      ]
+    },
+    {
+      "id": "64-H019",
+      "tableId": "64",
+      "cableType": "H019",
+      "contracts": [
+        {
+          "id": "LH02",
+          "file": "/data/contracts/64/LH02/manifest.json"
+        }
+      ]
+    }
+  ]
+}

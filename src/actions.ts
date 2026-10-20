@@ -10,7 +10,9 @@ import {
   stopAssembly as dbStopAssembly,
   resetAssemblyDone as dbResetAssemblyDone,
   toggleAssemblyWire as dbToggleAssemblyWire,
+  ensureContractLoaded,
 } from './db';
+import { ensureTableSchemasLoaded, loadServerCatalog } from './catalog';
 import { saveSchema } from './views/schema-form';
 import { saveTableAction } from './views/table-form';
 import { saveSkon, delSkon, skonBack, toggleAcc } from './views/skon-form';
@@ -90,6 +92,46 @@ export function doClear(): void {
   clearAll();
   toast('🗑 Data cleared');
   go('home');
+}
+
+export async function reloadCatalogAction(): Promise<void> {
+  await loadServerCatalog(true);
+  set({});
+  toast('Catalog reloaded');
+}
+
+export async function openTableAction(tableId: string): Promise<void> {
+  try {
+    await ensureTableSchemasLoaded(tableId);
+    go('table', { tableId, schemaId: null, selectedCon: null });
+  } catch (e) {
+    toast(`Failed to load table: ${(e as Error).message || 'error'}`);
+  }
+}
+
+export async function openContractAction(
+  tableId: string,
+  schemaId: string,
+  contractId: string,
+  file: string,
+): Promise<void> {
+  try {
+    const decodedContract = decodeURIComponent(contractId);
+    const decodedFile = decodeURIComponent(file);
+    const source = await ensureContractLoaded(schemaId, decodedContract, decodedFile);
+    toast(source === 'local' ? 'Loaded local contract data' : 'Loaded contract from server');
+    go('schema', {
+      tableId,
+      schemaId,
+      selectedCon: decodedContract,
+      tab: 'list',
+      q: '',
+      wireQ: '',
+      wirePage: null,
+    });
+  } catch (e) {
+    toast(`Failed to open contract: ${(e as Error).message || 'error'}`);
+  }
 }
 
 /* ── Assembly session ────────────────────────────────────────── */

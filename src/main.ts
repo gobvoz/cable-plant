@@ -24,6 +24,9 @@ import {
   doExport,
   doImport,
   doClear,
+  reloadCatalogAction,
+  openTableAction,
+  openContractAction,
   toggleFilterAcc,
   startAssemblyAction,
   stopAssemblyAction,
@@ -36,8 +39,9 @@ setRenderFn(render);
 
 /* ── Data migration & iOS backup restore ────────────────────────── */
 import { migrateToV8, restoreFromIdbIfNeeded } from './db';
+import { loadServerCatalog } from './catalog';
 
-restoreFromIdbIfNeeded().then(() => {
+Promise.all([restoreFromIdbIfNeeded(), loadServerCatalog()]).then(() => {
   migrateToV8();
   render();
 });
@@ -68,6 +72,9 @@ declare global {
     doExport: typeof doExport;
     doImport: typeof doImport;
     doClear: typeof doClear;
+    reloadCatalogAction: typeof reloadCatalogAction;
+    openTableAction: typeof openTableAction;
+    openContractAction: typeof openContractAction;
     startAssemblyAction: typeof startAssemblyAction;
     stopAssemblyAction: typeof stopAssemblyAction;
     resetAssemblyAction: typeof resetAssemblyAction;
@@ -97,6 +104,9 @@ window.delTableAction = delTableAction;
 window.doExport = doExport;
 window.doImport = doImport;
 window.doClear = doClear;
+window.reloadCatalogAction = reloadCatalogAction;
+window.openTableAction = openTableAction;
+window.openContractAction = openContractAction;
 window.startAssemblyAction = startAssemblyAction;
 window.stopAssemblyAction = stopAssemblyAction;
 window.resetAssemblyAction = resetAssemblyAction;
